@@ -32,7 +32,6 @@ class MovieData:ObservableObject {
                             let movies: [Movie] = wrappedResponse.results.map { movieData in
                                 return Movie(id: movieData.id, titleText: movieData.titleText, releaseYear: movieData.releaseYear, resultID: movieData.resultID, titleType: movieData.titleType, primaryImage: movieData.primaryImage, releaseDate: movieData.releaseDate, originalTitleText: movieData.originalTitleText)
                             }
-                            print("hehehe")
                             print(movies)
                             DispatchQueue.main.async {
                                 self.movieDatasource = movies
