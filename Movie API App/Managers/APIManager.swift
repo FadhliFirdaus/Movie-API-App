@@ -9,7 +9,7 @@ import Foundation
 
 class APIManager {
     static let shared = APIManager()
-    
+    let bareURLString = "https://moviesdatabase.p.rapidapi.com/titles"
     let movieURL = NSURL(string: "https://moviesdatabase.p.rapidapi.com/titles")! as URL
 
     let rapidAPIHeaders = [

@@ -10,29 +10,50 @@ import SwiftUI
 struct ContentView: View {
 
     @ObservedObject var movieData:MovieData = MovieData()
+    @State var showingScreen:Screens = .Main
+    @State var movieDetailIndex = -1
+    @FetchRequest(sortDescriptors: []) var storedMovies: FetchedResults<StoredMovieData>
+    @Environment(\.managedObjectContext) var managedObjectContext
     
+
     var body: some View {
         ScrollView(.vertical){
-            VStack{
-                if(movieData.movieDatasource.isEmpty){
+            VStack(spacing:0){
+                if(movieData.movieDatasource.isEmpty && storedMovies.isEmpty){
                     Text("empty")
                 } else {
-                    ForEach(Array(movieData.movieDatasource.enumerated()), id: \.element) { (index, movie) in
-                        Text("\(index) Movie is ")
+                    switch showingScreen {
+                    case .Main:
+                        MainScreen(storedMovieList: storedMovies, movieList: $movieData.movieDatasource, screenToShow: $showingScreen, movieDetail: $movieDetailIndex)
+                    case .MovieDetailScreen:
+                        MovieDetailView(screenToShow: $showingScreen, storedMovie: storedMovies.count > movieDetailIndex ? storedMovies[movieDetailIndex] : nil, movie: movieData.movieDatasource[movieDetailIndex])
+                            .onAppear {
+                                for movie in movieData.movieDatasource {
+                                    let storedMovie = StoredMovieData(context: managedObjectContext)
+                                    storedMovie.title = movie.titleText.text
+                                    storedMovie.yearReleased = Int16(movie.releaseYear.year)
+                                }
+                                do {
+                                    try managedObjectContext.save()
+                                } catch {
+                                    print("Error saving CoreData: \(error.localizedDescription)")
+                                }
+                            }
                     }
                 }
             }
             .onAppear(perform: {
-                movieData.getMovieDatas()
-                Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
-                    d("count is : \(movieData.movieDatasource.count)")
+                if(storedMovies.isEmpty){
+                    movieData.getMovieDatas()
                 }
             })
+            .ignoresSafeArea()
         }
         .frame(width: UIScreen.screenWidth, height: UIScreen.screenHeight, alignment: .top)
         .refreshable {
             movieData.getMovieDatas()
         }
+        .ignoresSafeArea()
     }
 }
 
