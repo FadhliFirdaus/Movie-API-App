@@ -161,3 +161,14 @@ class JSONNull: Codable, Hashable {
         try container.encodeNil()
     }
 }
+
+let mockMovieData: Movie = Movie(
+    id: "123456",
+    titleText: TitleText(text: "Mock Movie", typename: .titleText),
+    releaseYear: ReleaseYear(year: 2022, endYear: nil, typename: .yearRange),
+    resultID: "789012",
+    titleType: TitleType(isEpisode: false, id: .short, typename: .titleType, isSeries: false, text: .short),
+    primaryImage: PrimaryImage(id: "image123", typename: "__typename", caption: Caption(typename: "__typename", plainText: "Mock Caption"), width: 800, height: 600, url: "https://example.com/image.jpg"),
+    releaseDate: ReleaseDate(typename: "__typename", day: nil, month: 1, year: 2022),
+    originalTitleText: TitleText(text: "Original Title", typename: .titleText)
+)
