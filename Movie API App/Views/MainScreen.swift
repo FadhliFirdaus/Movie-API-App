@@ -10,6 +10,7 @@ import SwiftUI
 
 
 struct MainScreen: View {
+    @ObservedObject var movieData:MovieData = MovieData()
     var storedMovieList: FetchedResults<StoredMovieData>
     @Binding var storedMovieRep:StoredMovieRepresentation
     @Binding var movieList:[Movie]
@@ -17,8 +18,10 @@ struct MainScreen: View {
     @Binding var movieDetail:Movie
     @State var searchText:String = ""
     @State var selectedTab:Tabs = .Browse
+    @State var showSheet = false
     
     var body: some View {
+        @State var text = movieData.stringRep
         VStack(spacing:0){
             VStack(spacing:0){
                 HStack(spacing:0){
@@ -28,7 +31,8 @@ struct MainScreen: View {
                         .textFieldStyle(.roundedBorder)
                     Button {
                         if let year = Int(searchText), (1900...2024).contains(year) {
-                            MovieData().getMovieDataWithParams(year: year)
+                            self.movieData.getMovieDataWithParams(year: year)
+                            showSheet.toggle()
                         }
                     } label: {
                         Image(systemName: "magnifyingglass")
@@ -37,6 +41,15 @@ struct MainScreen: View {
                             .frame(width: 40, height: 40, alignment: .center)
                             .scaleEffect(0.6)
                     }
+                    .sheet(isPresented: $showSheet, content: {
+                        if(movieData.stringRep == ""){
+                            Text("empty")
+                        } else {
+                            ScrollView(.vertical){
+                                Text("\(movieData.stringRep)")
+                            }
+                        }
+                    })
                 }
                 .frame(width: UIScreen.screenWidth - 30, height: UIScreen.screenHeight/10, alignment: .center)
                 
@@ -46,6 +59,7 @@ struct MainScreen: View {
                     }
                 })
                 .pickerStyle(.segmented)
+                .padding([.leading, .trailing], 24)
                 .zIndex(2)
                 VStack(spacing:0){
                     if selectedTab == .Browse {
@@ -88,7 +102,6 @@ struct MainScreen: View {
             )
             .edgesIgnoringSafeArea(.all)
         }
-        
     }
 }
 

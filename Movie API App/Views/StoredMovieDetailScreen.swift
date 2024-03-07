@@ -37,6 +37,7 @@ struct StoredMovieDetailScreen : View {
                     Button(action: {
                         withAnimation {
                             screenToShow = .Main
+                            
                         }
                     }, label: {
                         Image(systemName: "arrow.left")

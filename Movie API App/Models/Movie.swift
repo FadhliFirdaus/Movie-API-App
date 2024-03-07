@@ -82,14 +82,30 @@ struct Caption: Codable,Equatable, Hashable {
     // MARK: - ReleaseDate
 struct ReleaseDate: Codable, Equatable, Hashable {
     let typename: String
-    let day: JSONNull?
+    let day: Int?
     let month: Int?
-    let year: Int
+    let year: Int?
     
     enum CodingKeys: String, CodingKey {
         case typename = "__typename"
         case day, month, year
     }
+    
+    init(typename: String, day: Int?, month: Int?, year: Int?) {
+        self.typename = typename
+        self.day = day
+        self.month = month
+        self.year = year
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        typename = try container.decode(String.self, forKey: .typename)
+        day = try container.decodeIfPresent(Int.self, forKey: .day)
+        month = try container.decodeIfPresent(Int.self, forKey: .month)
+        year = try container.decodeIfPresent(Int.self, forKey: .year)
+    }
+
 }
 
     // MARK: - ReleaseYear
