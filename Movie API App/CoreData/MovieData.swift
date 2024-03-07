@@ -55,6 +55,7 @@ class MovieData:ObservableObject {
     }
     
     func getMovieDataWithParams(year:Int) {
+        movieDatasource.removeAll()
         let url = NSURL(string: APIManager.shared.bareURLString + "?year=\(year)")! as URL
         let headers = APIManager.shared.rapidAPIHeaders
         let request = NSMutableURLRequest(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
@@ -69,6 +70,7 @@ class MovieData:ObservableObject {
                 let httpResponse = response as? HTTPURLResponse
                 switch httpResponse?.statusCode{
                 case 200:
+                    d(2)
                     if let responseData = data {
                         let mainResponse = try? JSONDecoder().decode(MainResponse.self, from: responseData)
                         if let wrappedResponse = mainResponse {

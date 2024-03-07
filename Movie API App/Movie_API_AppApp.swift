@@ -14,6 +14,7 @@ struct Movie_API_AppApp: App {
         WindowGroup {
             ContentView()
                 .environment(\.managedObjectContext, dataController.container.viewContext)
+            
         }
     }
 }

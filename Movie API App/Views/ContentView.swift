@@ -18,15 +18,23 @@ struct ContentView: View {
 
     var body: some View {
         ScrollView(.vertical){
-            VStack(spacing:0){
+            VStack(spacing:10){
                 if(movieData.movieDatasource.isEmpty && storedMovies.isEmpty){
-                    Text("empty")
+                    VStack{
+                        Spacer()
+                        Text("Loading..")
+                        Spacer()
+                    }
+                    .frame(height: UIScreen.screenHeight)
                 } else {
                     switch showingScreen {
                     case .Main:
                         MainScreen(storedMovieList: storedMovies, movieList: $movieData.movieDatasource, screenToShow: $showingScreen, movieDetail: $movieDetailIndex)
+
+                        
                     case .MovieDetailScreen:
                         MovieDetailView(screenToShow: $showingScreen, storedMovie: storedMovies.count > movieDetailIndex ? storedMovies[movieDetailIndex] : nil, movie: movieData.movieDatasource[movieDetailIndex])
+
                             .onAppear {
                                 for movie in movieData.movieDatasource {
                                     let storedMovie = StoredMovieData(context: managedObjectContext)
@@ -42,6 +50,7 @@ struct ContentView: View {
                     }
                 }
             }
+
             .onAppear(perform: {
                 if(storedMovies.isEmpty){
                     movieData.getMovieDatas()
@@ -49,11 +58,10 @@ struct ContentView: View {
             })
             .ignoresSafeArea()
         }
-        .frame(width: UIScreen.screenWidth, height: UIScreen.screenHeight, alignment: .top)
         .refreshable {
             movieData.getMovieDatas()
         }
-        .ignoresSafeArea()
+        .ignoresSafeArea()//<- here
     }
 }
 
