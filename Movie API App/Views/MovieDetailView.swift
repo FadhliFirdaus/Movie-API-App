@@ -23,6 +23,7 @@ struct MovieDetailView:View {
                     .foregroundColor(Color.blue)
                 Spacer()
             }
+
             VStack(spacing:0){
                 Spacer()
                     .frame(height: getSafeAreaTop()/2)
@@ -42,6 +43,7 @@ struct MovieDetailView:View {
                     })
                     Spacer()
                 }
+                
                 .padding(20)
                 .padding(.top, 10)
                 Image("mock")
@@ -57,6 +59,7 @@ struct MovieDetailView:View {
                 }
                 Spacer()
             }
+
         }
         .frame(width: UIScreen.screenWidth, height: UIScreen.screenHeight, alignment: .top)
     }
