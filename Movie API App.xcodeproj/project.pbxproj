@@ -108,6 +108,7 @@
 		7164DE542B9892F200581497 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				71F1D8B12B9A4868001FA70C /* StoredMovieRepresentation.swift */,
 				7164DE602B98A54700581497 /* Movie.swift */,
 			);
 			path = Models;
@@ -121,7 +122,6 @@
 				7164DE6F2B98C3D000581497 /* MovieDetailView.swift */,
 				71F1D8AB2B9A41AB001FA70C /* StoredMovieDetailScreen.swift */,
 				71D0D6F02B99675E0009A44E /* PinterestCardView.swift */,
-				71F1D8B12B9A4868001FA70C /* StoredMovieRepresentation.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";

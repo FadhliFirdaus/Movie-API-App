@@ -10,6 +10,7 @@ import Foundation
 
 class MovieData:ObservableObject {
     @Published var movieDatasource:[Movie] = []
+    @Published var stringRep = ""
     var year = -1
     
     func getMovieDatas(){
@@ -41,10 +42,10 @@ class MovieData:ObservableObject {
                                     releaseDate: movieData.releaseDate,
                                     originalTitleText: movieData.originalTitleText)
                             }
-                            d(1, self.movieDatasource)
+                            
                             DispatchQueue.main.async {
                                 self.movieDatasource = movies
-                                d(2, self.movieDatasource)
+                                
                             }
                         }
                     }
@@ -72,12 +73,13 @@ class MovieData:ObservableObject {
                 let httpResponse = response as? HTTPURLResponse
                 switch httpResponse?.statusCode{
                 case 200:
-                    d(2)
                     if let responseData = data {
-                        d(3)
+                        if let responseString = String(data: responseData, encoding: .utf8) {
+                            d("Response Data:", responseString)
+                            self.stringRep += responseString
+                        }
                         let mainResponse = try? JSONDecoder().decode(MainResponse.self, from: responseData)
                         if let wrappedResponse = mainResponse {
-                            d(4)
                             let movies: [Movie] = wrappedResponse.results.map { movieData in
                                 return Movie(
                                     id: movieData.id,
@@ -86,13 +88,11 @@ class MovieData:ObservableObject {
                                     resultID: movieData.resultID,
                                     titleType: movieData.titleType,
                                     primaryImage: movieData.primaryImage,
-                                    releaseDate: movieData.releaseDate,
+                                    releaseDate: movieData.releaseDate ?? nil,
                                     originalTitleText: movieData.originalTitleText)
                             }
-                            DispatchQueue.main.async {
-                                d(5)
-                                self.movieDatasource = movies
-                            }
+                        } else {
+                            d("data not wrapped")
                         }
                     }
                 default:
