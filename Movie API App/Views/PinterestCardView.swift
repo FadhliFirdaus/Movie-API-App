@@ -41,7 +41,6 @@ struct PinterestCardView : View {
                         Spacer()
                     }
                     .padding(3)
-                    
                     HStack {
                         Spacer()
                         Text("Released : \(String(movie.releaseYear.year))")
@@ -58,8 +57,9 @@ struct PinterestCardView : View {
             .onAppear(perform: {
                 loadImage()
             })
-
             
+        
+        
     }
     
     func loadImage() {
@@ -83,41 +83,42 @@ struct PinterestCardView : View {
 struct PinterestCardViewStoredMovie : View {
     var movie:StoredMovieData?
     var body : some View {
-        ZStack{
-                //background
-            Group{
-                RoundedRectangle(cornerRadius: 12)
-                    .foregroundColor(.white)
-                    .shadow(radius: 1)
-            }
-            .frame(width: UIScreen.screenWidth/2 - 30, height: UIScreen.screenHeight/6, alignment: .center)
-            
-            Group{
+        RoundedRectangle(cornerRadius: 3)
+            .foregroundColor(.white)
+            .shadow(color: .black, radius: 0.5, x: 0, y: 0)
+            .frame(width: UIScreen.screenWidth/2 - 30, height: UIScreen.screenHeight / 3, alignment: .center)
+            .overlay {
                 VStack(spacing:0){
                     Image("mock")
                         .resizable()
-                        .scaledToFit()
-                        .mask(CustomTopRoundedRectangle(radius: 12))
+                        .scaledToFill()
+                        .frame(width: UIScreen.screenWidth/2 - 30, height: UIScreen.screenHeight / 6, alignment: .center)
+                        .mask(CustomTopRoundedRectangle(radius: 3))
+                    
                     HStack {
                         Text("\(movie?.title ?? "")")
                             .font(.headline)
+                            .lineLimit(1)
                         Spacer()
                     }
-                    .padding(6)
+                    .padding(3)
+                    
                     HStack {
                         Spacer()
-                        Text("Release year : \(movie?.yearReleased ?? 0)")
-                            .font(.caption)
+                        Text("Released : \(String(movie?.yearReleased ?? 1900))")
+                            .font(.footnote)
                     }
+                    .padding(3)
+                    Text("\(movie?.title ?? "")")
+                        .font(.caption)
+                        .lineLimit(4)
+                        .truncationMode(.tail)
                     Spacer()
-                    
                 }
-                .frame(alignment:.center)
             }
-            .frame(width: UIScreen.screenWidth/2 - 30, height: UIScreen.screenHeight/3, alignment: .center)
-        }
-        .padding(6)
+            
     }
+    
 }
 
 #Preview(body: {

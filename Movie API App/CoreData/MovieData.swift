@@ -41,8 +41,10 @@ class MovieData:ObservableObject {
                                     releaseDate: movieData.releaseDate,
                                     originalTitleText: movieData.originalTitleText)
                             }
+                            d(1, self.movieDatasource)
                             DispatchQueue.main.async {
                                 self.movieDatasource = movies
+                                d(2, self.movieDatasource)
                             }
                         }
                     }
@@ -55,8 +57,8 @@ class MovieData:ObservableObject {
     }
     
     func getMovieDataWithParams(year:Int) {
-        movieDatasource.removeAll()
         let url = NSURL(string: APIManager.shared.bareURLString + "?year=\(year)")! as URL
+        print(url)
         let headers = APIManager.shared.rapidAPIHeaders
         let request = NSMutableURLRequest(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
         request.httpMethod = "GET"
@@ -72,8 +74,10 @@ class MovieData:ObservableObject {
                 case 200:
                     d(2)
                     if let responseData = data {
+                        d(3)
                         let mainResponse = try? JSONDecoder().decode(MainResponse.self, from: responseData)
                         if let wrappedResponse = mainResponse {
+                            d(4)
                             let movies: [Movie] = wrappedResponse.results.map { movieData in
                                 return Movie(
                                     id: movieData.id,
@@ -86,6 +90,7 @@ class MovieData:ObservableObject {
                                     originalTitleText: movieData.originalTitleText)
                             }
                             DispatchQueue.main.async {
+                                d(5)
                                 self.movieDatasource = movies
                             }
                         }

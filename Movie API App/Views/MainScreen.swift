@@ -11,11 +11,12 @@ import SwiftUI
 
 struct MainScreen: View {
     var storedMovieList: FetchedResults<StoredMovieData>
+    @Binding var storedMovieRep:StoredMovieRepresentation
     @Binding var movieList:[Movie]
     @Binding var screenToShow:Screens
-    @Binding var movieDetail:Int
+    @Binding var movieDetail:Movie
     @State var searchText:String = ""
-    
+    @State var selectedTab:Tabs = .Browse
     
     var body: some View {
         VStack(spacing:0){
@@ -39,29 +40,42 @@ struct MainScreen: View {
                 }
                 .frame(width: UIScreen.screenWidth - 30, height: UIScreen.screenHeight/10, alignment: .center)
                 
-                if storedMovieList.isEmpty {
-                    LazyVGrid(columns: [GridItem(), GridItem()], spacing: 15) {
-                        ForEach(Array(movieList.enumerated()), id: \.element) { (index, movie) in
-                            PinterestCardView(movie: movie, urlString: movie.primaryImage?.url ?? "")
-                                .onTapGesture {
-                                    movieDetail = index
-                                    screenToShow = .MovieDetailScreen
-                                }
+                Picker("Selection", selection: $selectedTab, content: {
+                    ForEach(Tabs.allCases, id: \.self) {tab in
+                        Text(tab.rawValue)
+                    }
+                })
+                .pickerStyle(.segmented)
+                .zIndex(2)
+                VStack(spacing:0){
+                    if selectedTab == .Browse {
+                        LazyVGrid(columns: [GridItem(), GridItem()], spacing: 15) {
+                            ForEach(Array(movieList.enumerated()), id: \.element) { (index, movie) in
+                                PinterestCardView(movie: movie, urlString: movie.primaryImage?.url ?? "")
+                                    .onTapGesture {
+                                        screenToShow = .MovieDetailScreen
+                                        movieDetail = movie
+                                    }
+                            }
+                        }
+                    } else {
+                        LazyVGrid(columns: [GridItem(), GridItem()], spacing: 15) {
+                            ForEach(Array(storedMovieList.enumerated()), id: \.element) { (index, movie) in
+                                PinterestCardViewStoredMovie(movie: movie)
+                                    .onTapGesture {
+                                        screenToShow = .StoredMovieDetailScreen
+                                        storedMovieRep = StoredMovieRepresentation(title: movie.title ?? "", releaseYear: Int(movie.yearReleased), url: movie.url ?? "")
+                                    }
+                            }
                         }
                     }
-                } else {
-                    ForEach(Array(storedMovieList.enumerated()), id: \.element) { (index, movie) in
-                        PinterestCardViewStoredMovie(movie: movie)
-                            .onTapGesture {
-                                movieDetail = index
-                                screenToShow = .MovieDetailScreen
-                            }
-                    }
                 }
+                .padding(.top, 15)
                 Spacer()
             }
             .frame(width: UIScreen.screenWidth, alignment: .top)
             .padding(6)
+            
             
         }
         .frame(width: UIScreen.screenWidth, alignment: .top)

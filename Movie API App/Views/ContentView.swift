@@ -11,9 +11,10 @@ struct ContentView: View {
 
     @ObservedObject var movieData:MovieData = MovieData()
     @State var showingScreen:Screens = .Main
-    @State var movieDetailIndex = -1
+    @State var movieDetail:Movie = mockMovieData
     @FetchRequest(sortDescriptors: []) var storedMovies: FetchedResults<StoredMovieData>
     @Environment(\.managedObjectContext) var managedObjectContext
+    @State var storedMovieRep:StoredMovieRepresentation = StoredMovieRepresentation(title: "", releaseYear: 0, url: "")
     
 
     var body: some View {
@@ -29,32 +30,20 @@ struct ContentView: View {
                 } else {
                     switch showingScreen {
                     case .Main:
-                        MainScreen(storedMovieList: storedMovies, movieList: $movieData.movieDatasource, screenToShow: $showingScreen, movieDetail: $movieDetailIndex)
+                        MainScreen(storedMovieList: storedMovies, storedMovieRep: $storedMovieRep, movieList: $movieData.movieDatasource, screenToShow: $showingScreen, movieDetail: $movieDetail)
 
                         
                     case .MovieDetailScreen:
-                        MovieDetailView(screenToShow: $showingScreen, storedMovie: storedMovies.count > movieDetailIndex ? storedMovies[movieDetailIndex] : nil, movie: movieData.movieDatasource[movieDetailIndex])
-
-                            .onAppear {
-                                for movie in movieData.movieDatasource {
-                                    let storedMovie = StoredMovieData(context: managedObjectContext)
-                                    storedMovie.title = movie.titleText.text
-                                    storedMovie.yearReleased = Int16(movie.releaseYear.year)
-                                }
-                                do {
-                                    try managedObjectContext.save()
-                                } catch {
-                                    print("Error saving CoreData: \(error.localizedDescription)")
-                                }
-                            }
+                        MovieDetailView(screenToShow: $showingScreen, movie: movieDetail)
+                        
+                    case .StoredMovieDetailScreen:
+                        StoredMovieDetailScreen(storedMovie: storedMovieRep, screenToShow: $showingScreen)
                     }
                 }
             }
 
             .onAppear(perform: {
-                if(storedMovies.isEmpty){
-                    movieData.getMovieDatas()
-                }
+                movieData.getMovieDatas()
             })
             .ignoresSafeArea()
         }

@@ -7,6 +7,8 @@
 
 import Foundation
 import SwiftUI
+import CoreData
+
 
 func variableName<T>(_ variable: T) -> String {
     let name = String(describing: Mirror(reflecting: variable).subjectType)
@@ -63,4 +65,14 @@ struct CustomTopRoundedRectangle: Shape {
         
         return path
     }
+}
+
+func monthName(for integer: Int) -> String {
+    let monthNames = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    return monthNames.indices.contains(integer) ? monthNames[integer] : "\(integer)"
+}
+
+func getDocumentsDirectory() -> URL {
+    let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+    return paths[0]
 }
