@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import SwiftUI
+import CoreData
 
 extension UIScreen{
     static let screenWidth = UIScreen.main.bounds.size.width
@@ -50,5 +51,17 @@ struct GradientBackground: ViewModifier {
 extension View {
     func gradientBackground(startColor: Color, endColor: Color) -> some View {
         self.modifier(GradientBackground(startColor: startColor, endColor: endColor))
+    }
+}
+
+
+extension Image {
+    @MainActor
+    func getUIImage(newSize: CGSize) -> UIImage? {
+        let image = resizable()
+            .scaledToFill()
+            .frame(width: newSize.width, height: newSize.height)
+            .clipped()
+        return ImageRenderer(content: image).uiImage
     }
 }

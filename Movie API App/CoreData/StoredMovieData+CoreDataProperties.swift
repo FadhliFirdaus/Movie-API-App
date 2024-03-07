@@ -2,7 +2,7 @@
 //  StoredMovieData+CoreDataProperties.swift
 //  Movie API App
 //
-//  Created by Fadhli Firdaus on 07/03/2024.
+//  Created by Fadhli Firdaus on 08/03/2024.
 //
 //
 
@@ -17,6 +17,7 @@ extension StoredMovieData {
     }
 
     @NSManaged public var title: String?
+    @NSManaged public var url: String?
     @NSManaged public var yearReleased: Int16
 
 }
